@@ -1,0 +1,3 @@
+/target
+/src/app/pkg/sms.rs
+.env

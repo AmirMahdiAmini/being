@@ -1,0 +1,102 @@
+syntax = "proto3";
+
+package being;
+
+message Default{
+    string message = 1;
+}
+message Empty{
+}
+
+// ************************************
+// ************************************
+// auth service [signup, signin, change password, forgot password, verify]
+// ************************************
+// ************************************
+enum Gender{
+    MALE = 0;
+    FEMALE = 1;
+    TRANS = 2;
+}
+message SignupRequest{
+    string username = 1;
+    uint32 age = 2;
+    Gender gender = 3;
+    string phone = 4;
+    string password = 5;
+    string city = 6;
+}
+message SigninRequest{
+    string phone_or_username = 1;
+    string password = 2;
+}
+message VerifyRequest{
+    string phone = 1;
+    string code = 2;
+}
+message ForgotPasswordRequest{
+    string phone = 1;
+}
+message ChangePasswordRequest{
+    string sid = 1;
+    string phone = 2;
+    string password = 3;
+}
+service AuthService{
+    rpc Signup(SignupRequest) returns (Default);
+    rpc Signin(SigninRequest) returns (Default);
+    rpc Verify(VerifyRequest) returns (Default);
+    rpc ForgotPassword(ForgotPasswordRequest) returns (Default);
+    rpc ChangePassword(ChangePasswordRequest) returns (Default);
+}
+
+// ************************************
+// ************************************
+// being service [find, track, and ...]
+// ************************************
+// ************************************
+message Invitation{
+    string username= 1;
+    string message = 2;
+    string address = 3;
+}
+message InvitationRequest{
+    string username = 1;
+    string message = 2;
+    string address = 3;
+}
+enum Request{
+    SENT = 0;
+    RECEIVED = 1;
+    NOTIFICATIONS = 2;
+}
+message DeleteRequest{
+    Request request  = 1;
+    string data = 2;
+}
+// ************RESPONSE****************
+message GetInformationResponse{
+    string username =1;
+    string phone =2;
+    string age = 3;
+    string gender = 4;
+    string partner = 5;
+    string status = 6;
+    repeated string system_notifications = 7;
+    repeated Invitation sent_requests = 8;
+    repeated Invitation received_requests = 9;
+    bool is_active = 10;
+}
+// ***********************************
+message AcceptInvitationRequest{
+    string username = 1;
+    string address = 2;
+    Request accept_request = 3;
+}
+service BeingService{
+    rpc GetInformation(Empty) returns (GetInformationResponse);
+    rpc Delete(DeleteRequest) returns (Default);
+    rpc SendInvite(InvitationRequest) returns (Default);
+    rpc AcceptInvite(AcceptInvitationRequest) returns (Default);
+    rpc CancelInvite(InvitationRequest) returns (Default);
+}
